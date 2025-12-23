@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ElectroPlay</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#000;
+  color:cyan;
+  text-align:center;
+}
+header{
+  padding:25px;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{ text-shadow:0 0 10px cyan; }
+  to{ text-shadow:0 0 25px lime; }
+}
+nav button{
+  margin:6px;
+  padding:10px 18px;
+  font-size:15px;
+  background:transparent;
+  color:white;
+  border:2px solid cyan;
+  cursor:pointer;
+}
+nav button:hover{
+  background:cyan;
+  color:black;
+}
+section{
+  margin-top:20px;
+}
+.game-btn{
+  margin:6px;
+  padding:10px 18px;
+  font-size:15px;
+}
+.score{
+  margin-top:10px;
+  font-size:18px;
+  color:lime;
+}
+@media(max-width:600px){
+  nav button,.game-btn{
+    width:90%;
+    margin:6px auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>⚡ ElectroPlay</h1>
+  <p>Play • Learn • Master Electronics</p>
+  <div class="score">⭐ Score: <span id="score">0</span></div>
+</header>
+
+<nav>
+  <button onclick="home()">🏠 Home</button>
+  <button onclick="games()">🎮 Games</button>
+  <button onclick="about()">👩‍💻 About Me</button>
+</nav>
+
+<section id="box"></section>
+
+<!-- 🔊 Sounds -->
+<audio id="rightSound">
+  <source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg">
+</audio>
+<audio id="wrongSound">
+  <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+</audio>
+
+<script>
+let score = 0;
+
+function updateScore(val){
+  score += val;
+  document.getElementById("score").innerText = score;
+}
+
+function home(){
+  document.getElementById("box").innerHTML=`
+    <h2>Welcome Electronics Students!</h2>
+    <p>
+    Learn Electronics & Telecommunication through
+    fun games, logic and interaction.
+    </p>
+  `;
+}
+
+function games(){
+  document.getElementById("box").innerHTML=`
+    <h2>🎮 Electronics Games</h2>
+    <button class="game-btn" onclick="resistor()">🔧 Resistor Game</button>
+    <button class="game-btn" onclick="diode()">➡️ Diode Game</button>
+    <button class="game-btn" onclick="logic()">🔢 Logic Gate Game</button>
+    <button class="game-btn" onclick="mosfet()">⚙ MOSFET Game</button>
+    <div id="game"></div>
+  `;
+}
+
+function resistor(){
+  document.getElementById("game").innerHTML=`
+    <h3>Resistor Game</h3>
+    <p>Choose correct resistor to glow LED</p>
+    <button onclick="right()">220Ω</button>
+    <button onclick="wrong()">100Ω</button>
+    <button onclick="wrong()">1kΩ</button>
+    <p id="ans"></p>
+  `;
+}
+
+function diode(){
+  document.getElementById("game").innerHTML=`
+    <h3>Diode Game</h3>
+    <p>Correct biasing?</p>
+    <button onclick="right()">Forward Bias</button>
+    <button onclick="wrong()">Reverse Bias</button>
+    <p id="ans"></p>
+  `;
+}
+
+function logic(){
+  document.getElementById("game").innerHTML=`
+    <h3>Logic Gate Game</h3>
+    <p>AND Gate: A=1, B=1 → Output?</p>
+    <button onclick="right()">1</button>
+    <button onclick="wrong()">0</button>
+    <p id="ans"></p>
+  `;
+}
+
+function mosfet(){
+  document.getElementById("game").innerHTML=`
+    <h3>MOSFET Game</h3>
+    <p>When does NMOS turn ON?</p>
+    <button onclick="right()">Vgs > Vth</button>
+    <button onclick="wrong()">Vds > Vth</button>
+    <p id="ans"></p>
+  `;
+}
+
+function right(){
+  document.getElementById("ans").innerHTML="✅ Correct!";
+  document.getElementById("rightSound").play();
+  updateScore(10);
+}
+
+function wrong(){
+  document.getElementById("ans").innerHTML="❌ Wrong! Try again";
+  document.getElementById("wrongSound").play();
+}
+
+function about(){
+  document.getElementById("box").innerHTML=`
+    <h2>👩‍💻 About Me</h2>
+    <p>
+    Hi, I am <b>Sakshi</b>, an Electronics & Telecommunication student.
+    </p>
+    <p>
+    I developed <b>ElectroPlay</b> to make electronics learning
+    interactive and enjoyable using games.
+    </p>
+    <p>
+    Skills: Electronics, Telecommunication,
+    HTML, CSS, JavaScript
+    </p>
+  `;
+}
+
+home();   // default page
+</script>
+
+</body>
+</html>
