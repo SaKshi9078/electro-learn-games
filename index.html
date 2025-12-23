@@ -1,184 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>ElectroPlay</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  font-family:Arial;
   background:#000;
-  color:cyan;
+  color:#0ff;
+  font-family:Arial;
+  overflow:hidden;
+}
+
+/* Animated background */
+.bg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0,255,255,0.05) 0px,
+      rgba(0,255,255,0.05) 2px,
+      transparent 2px,
+      transparent 40px
+    );
+  animation: move 6s linear infinite;
+}
+@keyframes move{
+  from{background-position:0 0;}
+  to{background-position:400px 0;}
+}
+
+.container{
+  position:relative;
+  z-index:2;
+  padding:20px;
   text-align:center;
 }
-header{
-  padding:25px;
-  animation:glow 2s infinite alternate;
-}
-@keyframes glow{
-  from{ text-shadow:0 0 10px cyan; }
-  to{ text-shadow:0 0 25px lime; }
-}
-nav button{
-  margin:6px;
-  padding:10px 18px;
-  font-size:15px;
+
+button{
   background:transparent;
-  color:white;
   border:2px solid cyan;
+  color:white;
+  padding:10px 20px;
+  margin:8px;
   cursor:pointer;
 }
-nav button:hover{
+button:hover{
   background:cyan;
   color:black;
 }
-section{
-  margin-top:20px;
+
+/* LED Component */
+.led{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#222;
+  margin:20px auto;
+  box-shadow:0 0 5px #000;
 }
-.game-btn{
-  margin:6px;
-  padding:10px 18px;
-  font-size:15px;
+.led.on{
+  background:red;
+  box-shadow:0 0 25px red;
 }
-.score{
-  margin-top:10px;
-  font-size:18px;
-  color:lime;
+
+/* Wire animation */
+.wire{
+  width:120px;
+  height:4px;
+  background:linear-gradient(90deg,cyan,transparent);
+  animation: current 1s linear infinite;
+  margin:auto;
 }
-@media(max-width:600px){
-  nav button,.game-btn{
-    width:90%;
-    margin:6px auto;
-  }
+@keyframes current{
+  from{background-position:0;}
+  to{background-position:120px;}
+}
+
+.info{
+  border:1px solid cyan;
+  padding:10px;
+  margin-top:15px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
+<div class="bg"></div>
+
+<div class="container">
   <h1>⚡ ElectroPlay</h1>
-  <p>Play • Learn • Master Electronics</p>
-  <div class="score">⭐ Score: <span id="score">0</span></div>
-</header>
+  <p>Animated Electronics Learning Platform</p>
 
-<nav>
-  <button onclick="home()">🏠 Home</button>
-  <button onclick="games()">🎮 Games</button>
-  <button onclick="about()">👩‍💻 About Me</button>
-</nav>
+  <button onclick="home()">Home</button>
+  <button onclick="resistor()">Resistor Game</button>
+  <button onclick="logic()">Logic Game</button>
+  <button onclick="about()">About</button>
 
-<section id="box"></section>
-
-<!-- 🔊 Sounds -->
-<audio id="rightSound">
-  <source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg">
-</audio>
-<audio id="wrongSound">
-  <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
-</audio>
+  <div id="area"></div>
+</div>
 
 <script>
-let score = 0;
-
-function updateScore(val){
-  score += val;
-  document.getElementById("score").innerText = score;
-}
-
 function home(){
-  document.getElementById("box").innerHTML=`
-    <h2>Welcome Electronics Students!</h2>
-    <p>
-    Learn Electronics & Telecommunication through
-    fun games, logic and interaction.
-    </p>
-  `;
-}
-
-function games(){
-  document.getElementById("box").innerHTML=`
-    <h2>🎮 Electronics Games</h2>
-    <button class="game-btn" onclick="resistor()">🔧 Resistor Game</button>
-    <button class="game-btn" onclick="diode()">➡️ Diode Game</button>
-    <button class="game-btn" onclick="logic()">🔢 Logic Gate Game</button>
-    <button class="game-btn" onclick="mosfet()">⚙ MOSFET Game</button>
-    <div id="game"></div>
+  document.getElementById("area").innerHTML=`
+    <div class="info">
+    <h3>Welcome</h3>
+    Learn Electronics with animated components,
+    current flow and logic-based games.
+    </div>
   `;
 }
 
 function resistor(){
-  document.getElementById("game").innerHTML=`
-    <h3>Resistor Game</h3>
-    <p>Choose correct resistor to glow LED</p>
-    <button onclick="right()">220Ω</button>
-    <button onclick="wrong()">100Ω</button>
-    <button onclick="wrong()">1kΩ</button>
-    <p id="ans"></p>
+  document.getElementById("area").innerHTML=`
+    <h3>Resistor Logic Game</h3>
+    <div class="wire"></div>
+    <div class="led" id="led"></div>
+
+    <p>Select correct resistor:</p>
+    <button onclick="on()">220Ω</button>
+    <button onclick="off()">100Ω</button>
+    <button onclick="off()">1kΩ</button>
+
+    <div class="info">
+    Resistor limits current to protect LED.
+    </div>
   `;
 }
 
-function diode(){
-  document.getElementById("game").innerHTML=`
-    <h3>Diode Game</h3>
-    <p>Correct biasing?</p>
-    <button onclick="right()">Forward Bias</button>
-    <button onclick="wrong()">Reverse Bias</button>
-    <p id="ans"></p>
-  `;
+function on(){
+  document.getElementById("led").classList.add("on");
+}
+
+function off(){
+  document.getElementById("led").classList.remove("on");
 }
 
 function logic(){
-  document.getElementById("game").innerHTML=`
+  document.getElementById("area").innerHTML=`
     <h3>Logic Gate Game</h3>
-    <p>AND Gate: A=1, B=1 → Output?</p>
-    <button onclick="right()">1</button>
-    <button onclick="wrong()">0</button>
-    <p id="ans"></p>
-  `;
-}
+    <p>AND Gate: 1 AND 0 = ?</p>
+    <button onclick="wrong()">1</button>
+    <button onclick="right()">0</button>
 
-function mosfet(){
-  document.getElementById("game").innerHTML=`
-    <h3>MOSFET Game</h3>
-    <p>When does NMOS turn ON?</p>
-    <button onclick="right()">Vgs > Vth</button>
-    <button onclick="wrong()">Vds > Vth</button>
-    <p id="ans"></p>
+    <div class="info" id="ans"></div>
   `;
 }
 
 function right(){
-  document.getElementById("ans").innerHTML="✅ Correct!";
-  document.getElementById("rightSound").play();
-  updateScore(10);
+  document.getElementById("ans").innerHTML="✅ Correct: AND outputs 1 only if both inputs are 1";
 }
 
 function wrong(){
-  document.getElementById("ans").innerHTML="❌ Wrong! Try again";
-  document.getElementById("wrongSound").play();
+  document.getElementById("ans").innerHTML="❌ Wrong: AND gate logic incorrect";
 }
 
 function about(){
-  document.getElementById("box").innerHTML=`
-    <h2>👩‍💻 About Me</h2>
-    <p>
-    Hi, I am <b>Sakshi</b>, an Electronics & Telecommunication student.
-    </p>
-    <p>
-    I developed <b>ElectroPlay</b> to make electronics learning
-    interactive and enjoyable using games.
-    </p>
-    <p>
-    Skills: Electronics, Telecommunication,
-    HTML, CSS, JavaScript
-    </p>
+  document.getElementById("area").innerHTML=`
+    <div class="info">
+    <h3>About Me</h3>
+    I am Sakshi, an Electronics & Telecommunication student.
+    I built ElectroPlay as an animated electronics learning platform
+    without using images.
+    </div>
   `;
 }
 
-home();   // default page
+home();
 </script>
 
 </body>
 </html>
+
